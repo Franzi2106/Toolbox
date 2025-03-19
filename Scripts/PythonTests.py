@@ -12,5 +12,4 @@
 #
 # # Test: Header der Datei ausgeben
 # print(nifti_img.header)
-print ("hallo world")
-print("wie geht es dir?")
+
