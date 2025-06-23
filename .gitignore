@@ -1,0 +1,24 @@
+# ============ IGNORIERE TEMPORÄRES =============
+
+# Jupyter Notebook
+.ipynb_checkpoints/
+
+# Python-Cache-Dateien
+__pycache__/
+*.pyc
+
+# Systemdateien
+.DS_Store
+
+# ============ IGNORIERE DATEN =============
+
+# NIfTI und Imaging
+*.nii
+*.nii.gz
+
+# CSVs & Rohdaten
+*.csv
+
+# Sonstiges
+*.log
+*.env
