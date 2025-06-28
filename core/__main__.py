@@ -1,0 +1,44 @@
+#!/usr/bin/env python3
+import sys, os
+from core.utils.environment import fsl_conflict_check
+from core.config.config_manager import ConfigManager
+
+from core.pipeline.io           import make_paths
+from core.pipeline.parcellation import apply_parcellation
+from core.pipeline.subjectdict  import build_subject_dict
+
+def main():
+    # 1) Env check
+    if not fsl_conflict_check():
+        print("❌ FSL check failed. Aborting.")
+        sys.exit(1)
+
+    # 2) Load config
+    cfg = ConfigManager("toolbox.ini")
+    if cfg.getboolean("APP", "show_config_on_startup"):
+        print(cfg)
+        sys.exit(0)
+
+    # 3) Discover files
+    subj = cfg.get("APP", "subject_id", fallback="testsubj")
+    print(f"▶️  Discovering files for {subj}")
+    t1_path, atlas_path = make_paths(subj)
+    print("    T1 →", t1_path)
+    print("    Atlas →", atlas_path)
+
+    # 4) Parcellate
+    out_dir = cfg.get("PATHS", "output_dir", fallback=".")
+    print("▶️  Parcellating atlas into subject space…")
+    label_map = apply_parcellation(t1_path, atlas_path, out_dir=out_dir)
+    print("    Label map →", label_map)
+
+    # 5) Build subject dict
+    print("▶️  Building subject dictionary…")
+    subj_dict = build_subject_dict(subj, t1_path, label_map)
+    print("    Subject dict →", subj_dict)
+
+    print("✅ All steps completed.")
+    sys.exit(0)
+
+if __name__ == "__main__":
+    main()

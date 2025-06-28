@@ -1,0 +1,39 @@
+# core/config/config_manager.py
+
+import os
+from configparser import ConfigParser
+
+class ConfigManager:
+    def __init__(self, path):
+        self.path = path
+        self.cfg  = ConfigParser()
+        # default settings
+        self.cfg["APP"] = {
+            "show_config_on_startup": "False",
+            "n_procs": "2",
+            "subject_id": ""           # add a default subject_id key
+        }
+        if os.path.exists(path):
+            self.cfg.read(path)
+        else:
+            with open(path, "w") as f:
+                self.cfg.write(f)
+
+    def get(self, section, option, fallback=None):
+        return self.cfg.get(section, option, fallback=fallback)
+
+    def getboolean(self, section, option, fallback=None):
+        return self.cfg.getboolean(section, option, fallback=fallback)
+
+    def getint(self, section, option, fallback=None):
+        return self.cfg.getint(section, option, fallback=fallback)
+
+    def __str__(self):
+        from io import StringIO
+        buf = StringIO()
+        self.cfg.write(buf)
+        return buf.getvalue()
+
+    def save(self):
+        with open(self.path, "w") as f:
+            self.cfg.write(f)
