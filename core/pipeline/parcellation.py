@@ -16,3 +16,25 @@ def apply_parcellation(t1_path, atlas_path, out_dir="."):
     #       e.g. `singularity exec fsl.simg flirt ... -o out_path`
     # For now, just pretend the file was created:
     return out_path
+
+
+def parc_workflow(config):
+    """Return a workflow that runs the parcellation step."""
+    from nipype import Workflow, Node
+    from nipype.interfaces.utility import Function
+
+    wf = Workflow(name="parc_workflow")
+
+    node = Node(
+        Function(
+            input_names=["t1_path", "atlas_path", "out_dir"],
+            output_names=["label_map"],
+            function=apply_parcellation,
+        ),
+        name="apply_parcellation",
+    )
+
+    node.inputs.out_dir = config.get("PATHS", "output_dir", fallback=".")
+
+    wf.add_nodes([node])
+    return wf
