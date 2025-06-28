@@ -10,18 +10,18 @@ class MainWorkflow(Workflow):
         self.config = config
 
         # 1) I/O step
-        from core.pipeline.io import io_workflow
+        from core.pipeline.io_workflow import io_workflow
         wf_io = io_workflow(config)
         # Pull all nodes from the I/O workflow into this one
         self.add_nodes(wf_io.nodes)
 
         # 2) Parcellation step
-        from core.pipeline.parcellation import parc_workflow
+        from core.pipeline.parc_workflow import parc_workflow
         wf_parc = parc_workflow(config)
         self.add_nodes(wf_parc.nodes)
 
         # 3) Subject‐dict assembly
-        from core.pipeline.subjectdict import subjectdict_workflow
+        from core.pipeline.subjectdict_workflow import subjectdict_workflow
         wf_sd = subjectdict_workflow(config)
         self.add_nodes(wf_sd.nodes)
 
