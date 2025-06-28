@@ -7,7 +7,11 @@ class MainWorkflow(Workflow):
     """
     def __init__(self, config):
         super().__init__(name="MainWorkflow")
-        self.config = config
+        # Nipype expects ``self.config`` to be a plain dictionary, but the
+        # ``ConfigManager`` passed in here exposes ``get`` helpers only.
+        # Store it separately to avoid ``Workflow.run`` failing when it tries
+        # to treat ``ConfigManager`` like a dictionary.
+        self.cfg = config
 
         # 1) I/O step
         from core.pipeline.io_workflow import io_workflow
@@ -24,15 +28,32 @@ class MainWorkflow(Workflow):
         wf_sd = subjectdict_workflow(config)
         self.add_nodes([wf_sd])
 
-        # Connect sub-workflows
+        # Connect sub-workflows using three-element syntax
         self.connect([
-            (wf_io.get_node('make_paths'), 't1_path',
-             wf_parc.get_node('apply_parcellation'), 't1_path'),
-            (wf_io.get_node('make_paths'), 'atlas_path',
-             wf_parc.get_node('apply_parcellation'), 'atlas_path'),
-            (wf_io.get_node('make_paths'), 't1_path',
-             wf_sd.get_node('build_subject_dict'), 't1_path'),
-            (wf_parc.get_node('apply_parcellation'), 'label_map',
-             wf_sd.get_node('build_subject_dict'), 'label_map'),
+            (
+                wf_io,
+                wf_parc,
+                [
+                    ('make_paths.t1_path', 'apply_parcellation.t1_path'),
+                    ('make_paths.atlas_path', 'apply_parcellation.atlas_path'),
+                ],
+            ),
+            (
+                wf_io,
+                wf_sd,
+                [
+                    ('make_paths.t1_path', 'build_subject_dict.t1_path'),
+                ],
+            ),
+            (
+                wf_parc,
+                wf_sd,
+                [
+                    (
+                        'apply_parcellation.label_map',
+                        'build_subject_dict.label_map',
+                    ),
+                ],
+            ),
         ])
 
