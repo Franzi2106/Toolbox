@@ -1,0 +1,7 @@
+filename	acq_time	operator	randstr
+anat/sub-IndivConn000002_ses-03_run-01_T1w.nii.gz	n/a	n/a	5826bae0
+dwi/sub-IndivConn000002_ses-03_run-01_dwi.nii.gz	n/a	n/a	95f22cb0
+func/sub-IndivConn000002_ses-03_task-MotorHandRightActive_run-01_bold.nii.gz	n/a	n/a	210c4471
+func/sub-IndivConn000002_ses-03_task-MotorHandRightTouch_run-02_bold.nii.gz	n/a	n/a	977a4d28
+func/sub-IndivConn000002_ses-03_task-Phrases_run-01_bold.nii.gz	n/a	n/a	a8267075
+func/sub-IndivConn000002_ses-03_task-VerbGeneration_run-01_bold.nii.gz	n/a	n/a	7a4e1294

@@ -4,7 +4,7 @@ from core.utils.environment import fsl_conflict_check
 from core.config.config_manager import ConfigManager
 
 from core.pipeline.io_workflow           import make_paths
-from core.pipeline.parc_workflow import apply_parcellation
+from core.pipeline.parc_workflow         import apply_parcellation
 from core.pipeline.subjectdict_workflow  import build_subject_dict
 
 def main():
