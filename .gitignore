@@ -22,3 +22,12 @@ __pycache__/
 # Sonstiges
 *.log
 *.env
+
+# =====================================================
+# Virtual environments
+# =====================================================
+venv/
+env/
+ENV/
+.venv/
+.ipynb_checkpoints/
