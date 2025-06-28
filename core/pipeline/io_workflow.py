@@ -4,9 +4,18 @@ from nipype import Workflow, Node, Function
 
 
 def make_paths(subject_id):
-    """Return placeholder paths for T1 and atlas images."""
-    t1_path = f"/data/rawdata-archive/IndivConn/{subject_id}/anat/{subject_id}_T1w.nii.gz"
-    atlas_path = "/data/atlases/Schaefer2018_400Parcels.nii.gz"
+    """Return absolute paths for the subject T1 and atlas."""
+
+    t1_path = (
+        "/data/rawdata-archive/IndivConn/"
+        "sub-IndivConn000002/ses-01/anat/"
+        "sub-IndivConn000002_ses-01_run-01_T1w.nii.gz"
+    )
+    atlas_path = (
+        "/data/env/parcellations_atlases/AtlasPack/Schaefer/"
+        "tpl-MNI152NLin6Asym_atlas-Schaefer2018v0143_res-01_desc-"
+        "400ParcelsAllNetworks_dseg.nii.gz"
+    )
     return t1_path, atlas_path
 
 
