@@ -7,7 +7,11 @@ class MainWorkflow(Workflow):
     """
     def __init__(self, config):
         super().__init__(name="MainWorkflow")
-        self.config = config
+        # Nipype expects ``self.config`` to be a plain dictionary, but the
+        # ``ConfigManager`` passed in here exposes ``get`` helpers only.
+        # Store it separately to avoid ``Workflow.run`` failing when it tries
+        # to treat ``ConfigManager`` like a dictionary.
+        self.cfg = config
 
         # 1) I/O step
         from core.pipeline.io_workflow import io_workflow

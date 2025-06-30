@@ -6,6 +6,10 @@ from nipype import Workflow, Node, Function
 def apply_parcellation(t1_path: str, atlas_path: str, out_dir: str = "."):
     """Return the expected output label map path (placeholder)."""
 
+    # Function nodes execute in a new Python context.  Import dependencies
+    # inside the function so they are available when the node runs.
+    from pathlib import Path
+
     atlas_base = Path(atlas_path).with_suffix("").stem
     out_fname = f"{atlas_base}_in_subject.nii.gz"
     out_path = str(Path(out_dir) / out_fname)
