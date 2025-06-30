@@ -1,7 +1,5 @@
 """Parcellation workflow."""
-
 from pathlib import Path
-
 from nipype import Workflow, Node, Function
 
 
