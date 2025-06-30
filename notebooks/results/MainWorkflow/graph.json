@@ -1,0 +1,25 @@
+[
+    {
+        "group": 1,
+        "imports": [],
+        "name": "0_make_paths",
+        "size": 1
+    },
+    {
+        "group": 1,
+        "imports": [
+            "0_make_paths"
+        ],
+        "name": "1_apply_parcellation",
+        "size": 1
+    },
+    {
+        "group": 1,
+        "imports": [
+            "0_make_paths",
+            "1_apply_parcellation"
+        ],
+        "name": "2_build_subject_dict",
+        "size": 1
+    }
+]

@@ -1,0 +1,51 @@
+{
+    "groups": [
+        {
+            "name": "Group_00001",
+            "procs": [
+                0,
+                1,
+                2
+            ],
+            "total": 3
+        }
+    ],
+    "links": [
+        {
+            "source": 0,
+            "target": 1,
+            "value": 1
+        },
+        {
+            "source": 0,
+            "target": 2,
+            "value": 1
+        },
+        {
+            "source": 1,
+            "target": 2,
+            "value": 1
+        }
+    ],
+    "maxN": 3,
+    "nodes": [
+        {
+            "group": 1,
+            "name": "0_make_paths",
+            "report": "/data/data_fbaum/Toolbox/notebooks/results/MainWorkflow/io_workflow/make_paths/_report/report.rst",
+            "result": "/data/data_fbaum/Toolbox/notebooks/results/MainWorkflow/io_workflow/make_paths/result_make_paths.pklz"
+        },
+        {
+            "group": 1,
+            "name": "1_apply_parcellation",
+            "report": "/data/data_fbaum/Toolbox/notebooks/results/MainWorkflow/parc_workflow/apply_parcellation/_report/report.rst",
+            "result": "/data/data_fbaum/Toolbox/notebooks/results/MainWorkflow/parc_workflow/apply_parcellation/result_apply_parcellation.pklz"
+        },
+        {
+            "group": 1,
+            "name": "2_build_subject_dict",
+            "report": "/data/data_fbaum/Toolbox/notebooks/results/MainWorkflow/subjectdict_workflow/build_subject_dict/_report/report.rst",
+            "result": "/data/data_fbaum/Toolbox/notebooks/results/MainWorkflow/subjectdict_workflow/build_subject_dict/result_build_subject_dict.pklz"
+        }
+    ]
+}

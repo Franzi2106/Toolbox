@@ -1,0 +1,17 @@
+[
+    [
+        "function_str",
+        "def make_paths(subject_id):\n    \"\"\"Return absolute paths for the subject T1 and atlas.\"\"\"\n\n    t1_path = (\n        \"/data/rawdata-archive/IndivConn/\"\n        \"sub-IndivConn000002/ses-01/anat/\"\n        \"sub-IndivConn000002_ses-01_run-01_T1w.nii.gz\"\n    )\n    atlas_path = (\n        \"/data/env/parcellations_atlases/AtlasPack/Schaefer/\"\n        \"tpl-MNI152NLin6Asym_atlas-Schaefer2018v0143_res-01_desc-\"\n        \"400ParcelsAllNetworks_dseg.nii.gz\"\n    )\n    return t1_path, atlas_path\n"
+    ],
+    [
+        "subject_id",
+        "sub-IndivConn000002"
+    ],
+    [
+        "needed_outputs",
+        [
+            "atlas_path",
+            "t1_path"
+        ]
+    ]
+]

@@ -1,0 +1,21 @@
+[
+    [
+        "function_str",
+        "def build_subject_dict(subject_id: str, t1_path: str, label_map: str):\n    \"\"\"Return a basic dictionary describing the subject.\"\"\"\n\n    return {\n        \"subject_id\": subject_id,\n        \"t1_file\": t1_path,\n        \"label_map\": label_map,\n    }\n"
+    ],
+    [
+        "label_map",
+        "results/tpl-MNI152NLin6Asym_atlas-Schaefer2018v0143_res-01_desc-400ParcelsAllNetworks_dseg_in_subject.nii.gz"
+    ],
+    [
+        "subject_id",
+        "sub-IndivConn000002"
+    ],
+    [
+        "t1_path",
+        [
+            "/data/rawdata-archive/IndivConn/sub-IndivConn000002/ses-01/anat/sub-IndivConn000002_ses-01_run-01_T1w.nii.gz",
+            "d7d803b5474fbea7154227e1607ccdc0"
+        ]
+    ]
+]

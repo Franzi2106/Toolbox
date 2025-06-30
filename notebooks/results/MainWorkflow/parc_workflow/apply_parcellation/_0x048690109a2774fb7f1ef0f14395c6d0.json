@@ -1,0 +1,30 @@
+[
+    [
+        "atlas_path",
+        [
+            "/data/env/parcellations_atlases/AtlasPack/Schaefer/tpl-MNI152NLin6Asym_atlas-Schaefer2018v0143_res-01_desc-400ParcelsAllNetworks_dseg.nii.gz",
+            "e2b92621707f952a86ba51ea5af9d607"
+        ]
+    ],
+    [
+        "function_str",
+        "def apply_parcellation(t1_path: str, atlas_path: str, out_dir: str = \".\"):\n    \"\"\"Return the expected output label map path (placeholder).\"\"\"\n\n    # Function nodes execute in a new Python context.  Import dependencies\n    # inside the function so they are available when the node runs.\n    from pathlib import Path\n\n    atlas_base = Path(atlas_path).with_suffix(\"\").stem\n    out_fname = f\"{atlas_base}_in_subject.nii.gz\"\n    out_path = str(Path(out_dir) / out_fname)\n\n    # TODO: call registration tools here (e.g. FLIRT via Singularity)\n    return out_path\n"
+    ],
+    [
+        "out_dir",
+        "./results"
+    ],
+    [
+        "t1_path",
+        [
+            "/data/rawdata-archive/IndivConn/sub-IndivConn000002/ses-01/anat/sub-IndivConn000002_ses-01_run-01_T1w.nii.gz",
+            "d7d803b5474fbea7154227e1607ccdc0"
+        ]
+    ],
+    [
+        "needed_outputs",
+        [
+            "label_map"
+        ]
+    ]
+]
