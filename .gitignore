@@ -26,6 +26,9 @@ __pycache__/
 *.log
 *.env
 
+# Swane Code zur Hilfestellung 
+config_manager_swane.py
+
 # =====================================================
 # Virtual environments
 # =====================================================
