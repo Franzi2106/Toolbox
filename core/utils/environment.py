@@ -3,10 +3,9 @@ import subprocess
 import shutil
 import os
 
-# Path to your FSL Singularity image
-FSL_SIMG = "/cvmfs/neurodesk.ardc.edu.au/containers/fsl_6.0.4_20210105/fsl_6.0.4_20210105.simg"
+# Path to your FSL Singularity image is now provided via config
 
-def fsl_conflict_check() -> bool:
+def fsl_conflict_check(singularity_image: str) -> bool:
     """
     Return True if we can call FSL’s 'flirt' inside the Singularity container.
     """
@@ -15,12 +14,12 @@ def fsl_conflict_check() -> bool:
             print("ERROR: Singularity not found on PATH.")
             return False
 
-        if not os.path.exists(FSL_SIMG):
-            print(f"ERROR: FSL container not found at {FSL_SIMG}")
+        if not os.path.exists(singularity_image):
+            print(f"ERROR: FSL container not found at {singularity_image}")
             return False
 
         cmd = [
-            "singularity", "exec", FSL_SIMG,
+            "singularity", "exec", singularity_image,
             "flirt", "-version"
         ]
         res = subprocess.run(

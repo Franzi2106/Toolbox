@@ -31,4 +31,3 @@ def subjectdict_workflow(config):
 
     wf.add_nodes([sd_node])
     return wf
-
