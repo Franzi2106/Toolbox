@@ -20,7 +20,8 @@ class ConfigManager:
         self.cfg["PATHS"] = {
             "output_dir": "./results",
             "bids_root": "",
-            "atlas_path": ""
+            "atlas_path": "",
+            "reference_T1": ""
         }
 
         self.cfg["FSL"] = {

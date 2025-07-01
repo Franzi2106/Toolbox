@@ -15,10 +15,10 @@ def main():
         sys.exit(0)
 
 #    # 2) Env check
-#    fsl_img = cfg.get("FSL", "singularity_image", fallback="")
-#    if not fsl_conflict_check(fsl_img):
-#        print("FSL check failed. Aborting.")
-#        sys.exit(1)
+    fsl_img = cfg.get("FSL", "singularity_image", fallback="")
+    if not fsl_conflict_check(fsl_img):
+        print("FSL check failed. Aborting.")
+        sys.exit(1)
 
     # 3) Discover files
     subj = cfg.get("APP", "subject_id", fallback="testsubj")
