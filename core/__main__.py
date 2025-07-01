@@ -10,6 +10,12 @@ from core.pipeline.subjectdict_workflow  import build_subject_dict
 def main():
     # 1) Load config
     cfg = ConfigManager("toolbox.ini")
+    # ─────────────────────────────────────────────────────────────
+# 1b) FSL-Container-Pfad als ENV-Variable exportieren
+    sing_img = cfg.get("FSL", "singularity_image", fallback=None)
+    if sing_img:
+        os.environ["FSL_SINGULARITY_IMAGE"] = sing_img
+# ─────────────────────────────────────────────────────────────
     if cfg.getboolean("APP", "show_config_on_startup"):
         print(cfg)
         sys.exit(0)

@@ -1,9 +1,9 @@
 """Parcellation workflow."""
-
 from pathlib import Path
 import os
 import shutil
 import subprocess
+import tempfile
 
 from nipype import Workflow, Node, Function
 
@@ -17,34 +17,54 @@ def apply_parcellation(t1_path: str, atlas_path: str, out_dir: str = "."):
     out_dir.mkdir(parents=True, exist_ok=True)
     out_path = str(out_dir / out_fname)
 
-    # Build FLIRT command.  We support running either directly if ``flirt`` is
-    # available on ``PATH`` or through a Singularity container specified via the
-    # ``FSL_SINGULARITY_IMAGE`` environment variable.
-    flirt_exec = shutil.which("flirt")
-    singularity_img = os.environ.get("FSL_SINGULARITY_IMAGE")
+    def get_cmd(tool: str):
+        local = shutil.which(tool)
+        singularity_img = os.environ.get("FSL_SINGULARITY_IMAGE")
+        if singularity_img:
+            return ["singularity", "exec", singularity_img, tool]
+        if local:
+            return [local]
+        raise RuntimeError(f"{tool} not found – install FSL or set FSL_SINGULARITY_IMAGE")
 
-    if singularity_img:
-        cmd = ["singularity", "exec", singularity_img, "flirt"]
-    elif flirt_exec:
-        cmd = [flirt_exec]
-    else:
-        raise RuntimeError("FLIRT not found – install FSL or set FSL_SINGULARITY_IMAGE")
+    flirt_cmd = get_cmd("flirt")
+    bet_cmd = get_cmd("bet")
 
-    cmd += [
-        "-in",
-        atlas_path,
-        "-ref",
-        t1_path,
-        "-out",
-        out_path,
-        "-interp",
-        "nearestneighbour",
-    ]
+    def run(cmd):
+        try:
+            subprocess.run(cmd, check=True)
+        except subprocess.CalledProcessError as exc:
+            raise RuntimeError(f"Command {' '.join(cmd)} failed with exit code {exc.returncode}") from exc
 
-    try:
-        subprocess.run(cmd, check=True)
-    except subprocess.CalledProcessError as exc:
-        raise RuntimeError(f"FLIRT failed with exit code {exc.returncode}") from exc
+    with tempfile.TemporaryDirectory() as tmpdir:
+        t1_brain = Path(tmpdir) / "t1_brain.nii.gz"
+        # Skull-strip the reference T1 to improve registration accuracy
+        bet_cmd_full = bet_cmd + [t1_path, str(t1_brain), "-R", "-f", "0.5"]
+        run(bet_cmd_full)
+
+        flirt_full = flirt_cmd + [
+            "-in",
+            atlas_path,
+            "-ref",
+            str(t1_brain),
+            "-out",
+            out_path,
+            "-interp",
+            "nearestneighbour",
+            "-cost",
+            "mutualinfo",
+            "-searchrx",
+            "-90",
+            "90",
+            "-searchry",
+            "-90",
+            "90",
+            "-searchrz",
+            "-90",
+            "90",
+            "-dof",
+            "6",
+        ]
+        run(flirt_full)
 
     return out_path
 
@@ -67,3 +87,4 @@ def parc_workflow(config):
 
     wf.add_nodes([parc_node])
     return wf
+
