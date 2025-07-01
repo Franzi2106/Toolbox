@@ -10,24 +10,29 @@ class MainWorkflow(Workflow):
         self.config = config
 
         # 1) I/O step
-        from core.pipeline.io import io_workflow
+        from core.pipeline.io_workflow import io_workflow
         wf_io = io_workflow(config)
-        # Pull all nodes from the I/O workflow into this one
-        self.add_nodes(wf_io.nodes)
+        self.add_nodes([wf_io])
 
         # 2) Parcellation step
-        from core.pipeline.parcellation import parc_workflow
+        from core.pipeline.parc_workflow import parc_workflow
         wf_parc = parc_workflow(config)
-        self.add_nodes(wf_parc.nodes)
+        self.add_nodes([wf_parc])
 
         # 3) Subject‐dict assembly
-        from core.pipeline.subjectdict import subjectdict_workflow
+        from core.pipeline.subjectdict_workflow import subjectdict_workflow
         wf_sd = subjectdict_workflow(config)
-        self.add_nodes(wf_sd.nodes)
+        self.add_nodes([wf_sd])
 
-        # (Optional) if you need to connect outputs of one to inputs of another:
-        # self.connect([
-        #     (wf_io.get_node('output'), 't1_file',
-        #      wf_parc.get_node('input'), 't1_file'),
-        #     # ... etc.
-        # ])
+        # Connect sub-workflows
+        self.connect([
+            (wf_io.get_node('make_paths'), 't1_path',
+             wf_parc.get_node('apply_parcellation'), 't1_path'),
+            (wf_io.get_node('make_paths'), 'atlas_path',
+             wf_parc.get_node('apply_parcellation'), 'atlas_path'),
+            (wf_io.get_node('make_paths'), 't1_path',
+             wf_sd.get_node('build_subject_dict'), 't1_path'),
+            (wf_parc.get_node('apply_parcellation'), 'label_map',
+             wf_sd.get_node('build_subject_dict'), 'label_map'),
+        ])
+

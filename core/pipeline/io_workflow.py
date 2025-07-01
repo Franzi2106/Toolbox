@@ -1,13 +1,44 @@
-# core/pipeline/io.py
+"""I/O discovery workflow."""
 
-def make_paths(subject_id):
-    """
-    Given a subject_id, return the two key file‐paths:
-      - T1 image file path
-      - Atlas file path
-    (In practice you’d discover these under your BIDS/data_dir.)
-    """
-    # TODO: point this at your real BIDS tree
-    t1_path    = f"/data/rawdata-archive/IndivConn/{subject_id}/anat/{subject_id}_T1w.nii.gz"
-    atlas_path = "/data/atlases/Schaefer2018_400Parcels.nii.gz"
+from pathlib import Path
+from nipype import Workflow, Node, Function
+
+
+def make_paths(subject_id, bids_root, atlas_path):
+    """Return absolute paths for the subject T1 and atlas."""
+
+    if bids_root:
+        t1_file = Path(bids_root) / subject_id / "ses-01" / "anat" / f"{subject_id}_ses-01_run-01_T1w.nii.gz"
+        t1_path = str(t1_file)
+    else:
+        t1_path = "/data/rawdata-archive/IndivConn/sub-IndivConn000002/ses-01/anat/sub-IndivConn000002_ses-01_run-01_T1w.nii.gz"
+
+    if not atlas_path:
+        atlas_path = (
+            "/data/env/parcellations_atlases/AtlasPack/Schaefer/"
+            "tpl-MNI152NLin6Asym_atlas-Schaefer2018v0143_res-01_desc-"
+            "400ParcelsAllNetworks_dseg.nii.gz"
+        )
+
     return t1_path, atlas_path
+
+
+def io_workflow(config):
+    """Create a Nipype workflow that discovers input file paths."""
+    wf = Workflow(name="io_workflow")
+
+    make_paths_node = Node(
+        Function(
+            input_names=["subject_id", "bids_root", "atlas_path"],
+            output_names=["t1_path", "atlas_path"],
+            function=make_paths,
+        ),
+        name="make_paths",
+    )
+
+    make_paths_node.inputs.subject_id = config.get("APP", "subject_id", fallback="testsubj")
+    make_paths_node.inputs.bids_root = config.get("PATHS", "bids_root", fallback="")
+    make_paths_node.inputs.atlas_path = config.get("PATHS", "atlas_path", fallback="")
+
+    wf.add_nodes([make_paths_node])
+    return wf

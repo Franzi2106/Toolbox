@@ -1,18 +1,37 @@
-# core/pipeline/parcellation.py
+"""Parcellation workflow."""
 
-import os
+from pathlib import Path
 
-def apply_parcellation(t1_path, atlas_path, out_dir="."):
-    """
-    Stub for atlas→subject‐space parcellation.
-    Returns the “label_map” filepath that you will later load.
-    """
-    # Build an output filename in out_dir
-    atlas_base = os.path.basename(atlas_path).replace(".nii.gz", "")
-    out_fname  = f"{atlas_base}_in_subject.nii.gz"
-    out_path   = os.path.join(out_dir, out_fname)
+from nipype import Workflow, Node, Function
 
-    # TODO: here you’d call your singularity/ANTS or FLIRT command,
-    #       e.g. `singularity exec fsl.simg flirt ... -o out_path`
-    # For now, just pretend the file was created:
+
+def apply_parcellation(t1_path: str, atlas_path: str, out_dir: str = "."):
+    """Return the expected output label map path (placeholder)."""
+
+    atlas_base = Path(atlas_path).with_suffix("").stem
+    out_fname = f"{atlas_base}_in_subject.nii.gz"
+    out_path = str(Path(out_dir) / out_fname)
+
+    # TODO: call registration tools here (e.g. FLIRT via Singularity)
     return out_path
+
+
+def parc_workflow(config):
+    """Create a Nipype workflow that performs atlas parcellation."""
+
+    wf = Workflow(name="parc_workflow")
+
+    parc_node = Node(
+        Function(
+            input_names=["t1_path", "atlas_path", "out_dir"],
+            output_names=["label_map"],
+            function=apply_parcellation,
+        ),
+        name="apply_parcellation",
+    )
+
+    parc_node.inputs.out_dir = config.get("PATHS", "output_dir", fallback=".")
+
+    wf.add_nodes([parc_node])
+    return wf
+

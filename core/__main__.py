@@ -3,26 +3,29 @@ import sys, os
 from core.utils.environment import fsl_conflict_check
 from core.config.config_manager import ConfigManager
 
-from core.pipeline.io           import make_paths
-from core.pipeline.parcellation import apply_parcellation
-from core.pipeline.subjectdict  import build_subject_dict
+from core.pipeline.io_workflow           import make_paths
+from core.pipeline.parc_workflow import apply_parcellation
+from core.pipeline.subjectdict_workflow  import build_subject_dict
 
 def main():
-    # 1) Env check
-    if not fsl_conflict_check():
-        print("❌ FSL check failed. Aborting.")
-        sys.exit(1)
-
-    # 2) Load config
+    # 1) Load config
     cfg = ConfigManager("toolbox.ini")
     if cfg.getboolean("APP", "show_config_on_startup"):
         print(cfg)
         sys.exit(0)
 
+    # 2) Env check
+    fsl_img = cfg.get("FSL", "singularity_image", fallback="")
+    if not fsl_conflict_check(fsl_img):
+        print("❌ FSL check failed. Aborting.")
+        sys.exit(1)
+
     # 3) Discover files
     subj = cfg.get("APP", "subject_id", fallback="testsubj")
     print(f"▶️  Discovering files for {subj}")
-    t1_path, atlas_path = make_paths(subj)
+    bids_root = cfg.get("PATHS", "bids_root", fallback="")
+    atlas_cfg = cfg.get("PATHS", "atlas_path", fallback="")
+    t1_path, atlas_path = make_paths(subj, bids_root, atlas_cfg)
     print("    T1 →", t1_path)
     print("    Atlas →", atlas_path)
 
@@ -42,3 +45,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

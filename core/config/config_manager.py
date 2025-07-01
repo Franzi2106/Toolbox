@@ -11,7 +11,17 @@ class ConfigManager:
         self.cfg["APP"] = {
             "show_config_on_startup": "False",
             "n_procs": "2",
-            "subject_id": ""           # add a default subject_id key
+            "subject_id": ""
+        }
+
+        self.cfg["PATHS"] = {
+            "output_dir": "./results",
+            "bids_root": "",
+            "atlas_path": ""
+        }
+
+        self.cfg["FSL"] = {
+            "singularity_image": "/cvmfs/neurodesk.ardc.edu.au/containers/fsl_6.0.4_20210105/fsl_6.0.4_20210105.simg"
         }
         if os.path.exists(path):
             self.cfg.read(path)
@@ -37,3 +47,4 @@ class ConfigManager:
     def save(self):
         with open(self.path, "w") as f:
             self.cfg.write(f)
+
