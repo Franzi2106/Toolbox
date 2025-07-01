@@ -24,8 +24,9 @@ def main():
     subj = cfg.get("APP", "subject_id", fallback="testsubj")
     print(f"Discovering files for {subj}")
     bids_root = cfg.get("PATHS", "bids_root", fallback="")
+    reference_T1 = cfg.get("PATHS", "reference_T1", fallback="")
     atlas_cfg = cfg.get("PATHS", "atlas_path", fallback="")
-    t1_path, atlas_path = make_paths(subj, bids_root, atlas_cfg)
+    t1_path, atlas_path = make_paths(subj, bids_root, reference_T1, atlas_cfg)
     print("    T1 →", t1_path)
     print("    Atlas →", atlas_path)
 

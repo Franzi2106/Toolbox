@@ -22,6 +22,7 @@ class ConfigManager:
             "bids_root": "",
             "atlas_path": "",
             "reference_T1": ""
+            # reference_T1 wird noch nicht verwended/gebraucht. Muss noch referenziert werden in __main__ bwz. .ini
         }
 
         self.cfg["FSL"] = {
