@@ -35,10 +35,11 @@ def io_workflow(config):
     )
 
 # Inputs füllen
-    make_paths_node.inputs.subject_id   = cfg.get("APP",   "subject_id",   fallback="testsubj")
-    make_paths_node.inputs.bids_root    = cfg.get("PATHS", "bids_root",    fallback="")
-    make_paths_node.inputs.reference_T1 = cfg.get("PATHS", "reference_T1", fallback="")
-    make_paths_node.inputs.atlas_path   = cfg.get("PATHS", "atlas_path",   fallback="")
+    make_paths_node.inputs.subject_id   = config.get("APP",   "subject_id",   fallback="testsubj")
+    make_paths_node.inputs.bids_root    = config.get("PATHS", "bids_root",    fallback="")
+    make_paths_node.inputs.reference_T1 = config.get("PATHS", "reference_T1", fallback="")
+    make_paths_node.inputs.atlas_path   = config.get("PATHS", "atlas_path",   fallback="")
 
     wf.add_nodes([make_paths_node])
-    return wf
+    return wf 
+    
