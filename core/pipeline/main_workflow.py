@@ -19,7 +19,12 @@ class MainWorkflow(Workflow):
         wf_parc = parc_workflow(config)
         self.add_nodes([wf_parc])
 
-        # 3) Subject‐dict assembly
+        # 3) Linear registration of additional image
+        from core.pipeline.linear_reg_workflow import linear_reg_workflow
+        wf_reg = linear_reg_workflow(config)
+        self.add_nodes([wf_reg])
+
+        # 4) Subject‐dict assembly
         from core.pipeline.subjectdict_workflow import subjectdict_workflow
         wf_sd = subjectdict_workflow(config)
         self.add_nodes([wf_sd])
@@ -30,6 +35,8 @@ class MainWorkflow(Workflow):
              wf_parc.get_node('apply_parcellation'), 't1_path'),
             (wf_io.get_node('make_paths'), 'atlas_path',
              wf_parc.get_node('apply_parcellation'), 'atlas_path'),
+            (wf_io.get_node('make_paths'), 't1_path',
+             wf_reg.get_node('linear_register'), 'reference_image'),
             (wf_io.get_node('make_paths'), 't1_path',
              wf_sd.get_node('build_subject_dict'), 't1_path'),
             (wf_parc.get_node('apply_parcellation'), 'label_map',

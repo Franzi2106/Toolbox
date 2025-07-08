@@ -66,6 +66,26 @@ def test_apply_parcellation(monkeypatch, tmp_path):
     # two commands should be executed: bet and flirt
     assert len(calls) == 2
 
+def test_linear_register(monkeypatch, tmp_path):
+    mod = importlib.import_module('core.pipeline.linear_reg_workflow')
+    linear_register = mod.linear_register
+
+    true_cmd = shutil.which('true') or '/bin/true'
+    def fake_which(tool):
+        return true_cmd
+    monkeypatch.setattr(shutil, 'which', fake_which)
+
+    calls = []
+    def fake_run(cmd, check):
+        calls.append(cmd)
+        return subprocess.CompletedProcess(cmd, 0)
+    monkeypatch.setattr(subprocess, 'run', fake_run)
+
+    out = linear_register('img.nii.gz', 'ref.nii.gz', out_dir=tmp_path)
+    expected = tmp_path / 'img_reg.nii.gz'
+    assert Path(out) == expected
+    assert len(calls) == 1
+
 def test_build_subject_dict(monkeypatch):
     mod = importlib.import_module('core.pipeline.subjectdict_workflow')
     build_subject_dict = mod.build_subject_dict

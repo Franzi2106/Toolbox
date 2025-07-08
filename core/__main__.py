@@ -5,6 +5,7 @@ from core.config.config_manager import ConfigManager
 
 from core.pipeline.io_workflow           import make_paths
 from core.pipeline.parc_workflow import apply_parcellation
+from core.pipeline.linear_reg_workflow import linear_register
 from core.pipeline.subjectdict_workflow  import build_subject_dict
 
 def main():
@@ -42,7 +43,16 @@ def main():
     label_map = apply_parcellation(t1_path, atlas_path, out_dir=out_dir)
     print("    Label map →", label_map)
 
-    # 5) Build subject dict
+    # 5) Register additional image if provided
+    moving_img = cfg.get("PATHS", "moving_image", fallback="")
+    if moving_img:
+        print("Registering additional image…")
+        registered = linear_register(moving_img, t1_path, out_dir=out_dir)
+        print("    Registered →", registered)
+    else:
+        print("No moving_image set – skipping registration")
+
+    # 6) Build subject dict
     print("Building subject dictionary…")
     subj_dict = build_subject_dict(subj, t1_path, label_map)
     print("    Subject dict →", subj_dict)
