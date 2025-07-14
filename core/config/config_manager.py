@@ -23,7 +23,7 @@ class ConfigManager:
             "atlas_path": "",
             "reference_T1": "",
             "moving_image": ""
-            # reference_T1 wird noch nicht verwended/gebraucht. Muss noch referenziert werden in __main__ bwz. .ini
+            
         }
 
         self.cfg["FSL"] = {
