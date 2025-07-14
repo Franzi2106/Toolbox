@@ -32,6 +32,7 @@ config_manager_swane.py
 #Notebooks 
 notebooks/*
 !notebooks/Toolbox_main_neurodesk.ipynb
+!notebooks/Tests.ipynb
 !notebooks/swane
 # =====================================================
 # Virtual environments
