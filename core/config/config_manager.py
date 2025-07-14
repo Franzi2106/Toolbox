@@ -21,8 +21,9 @@ class ConfigManager:
             "output_dir": "./results",
             "bids_root": "",
             "atlas_path": "",
-            "reference_T1": ""
+            "reference_T1": "", 
             # reference_T1 wird noch nicht verwended/gebraucht. Muss noch referenziert werden in __main__ bwz. .ini
+            "fmri_file": "" 
         }
 
         self.cfg["FSL"] = {

@@ -1,5 +1,7 @@
 # core/pipeline/main_workflow.py
 from nipype import Workflow
+from configparser import SectionProxy
+from core.pipeline.fmri_preproc_workflow import task_fMRI_workflow
 
 class MainWorkflow(Workflow):
     """
@@ -35,40 +37,14 @@ class MainWorkflow(Workflow):
             (wf_parc.get_node('apply_parcellation'), 'label_map',
              wf_sd.get_node('build_subject_dict'), 'label_map'),
         ])
-
-# Test: fmri preprocessing 
-def launch_fMRI_analysis(self):
-        # Check for Task FMRI sequences
-        for y in range(FMRI_NUM):
-
-            if not self.subject_input_state_list[DIL["FMRI_%d" % y]].loaded:
-                continue
-
-            fmri_file = self.subject_input_state_list.get_dicom_dir(DIL["FMRI_%d" % y])
-            self.fMRI = task_fMRI_workflow(␊
-                name=DIL["FMRI_%d" % y].value.workflow_name,␊
-                fmri_file=fmri_file,
-                config=self.subject_config[DIL["FMRI_%d" % y]],␊
-                base_dir=self.base_dir,␊
-            )␊
-            self.fMRI.long_name = "Task fMRI analysis - %d" % y
-            self.connect(
-                self.t1, "outputnode.ref_brain", self.fMRI, "inputnode.ref_BET"
-            )
-            for thresh_i in range(1, 4):
-                self.fMRI.sink_result(
-                    save_path=self.base_dir,
-                    result_node="outputnode",
-                    result_name="threshold_file_cont1_thresh%d" % thresh_i,
-                    sub_folder=self.Result_DIR + ".fMRI",
-                )
-                if (
-                    self.subject_config.getenum_safe(DIL["FMRI_%d" % y], "block_design")
-                    == BLOCK_DESIGN.RARB
-                ):
-                    self.fMRI.sink_result(
-                        save_path=self.base_dir,
-                        result_node="outputnode",
-                        result_name="threshold_file_cont2_thresh%d" % thresh_i,
-                        sub_folder=self.Result_DIR + ".fMRI",
-                    )
+    # Test: fmri preprocessing
+    def launch_fMRI_analysis(self, fmri_file):
+        """Create and attach the fMRI preprocessing workflow."""
+        wf = task_fMRI_workflow(
+            name="fmri_preproc",
+            fmri_file=fmri_file,
+            config=self.config.get("FMRI", SectionProxy({})),
+            base_dir=".",
+        )
+        self.add_nodes([wf])
+        return wf
