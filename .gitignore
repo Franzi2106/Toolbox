@@ -30,9 +30,7 @@ __pycache__/
 config_manager_swane.py
 
 #Notebooks 
-notebooks/*
-!notebooks/Toolbox_main_neurodesk.ipynb
-!notebooks/swane
+*.ipynb
 # =====================================================
 # Virtual environments
 # =====================================================
