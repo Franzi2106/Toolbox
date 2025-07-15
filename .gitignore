@@ -30,7 +30,9 @@ __pycache__/
 config_manager_swane.py
 
 #Notebooks 
-*.ipynb
+notebooks/results
+notebooks/swane
+
 # =====================================================
 # Virtual environments
 # =====================================================
