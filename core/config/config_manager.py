@@ -21,7 +21,13 @@ class ConfigManager:
             "output_dir": "./results",
             "bids_root": "",
             "atlas_path": "",
+<<<<<<< HEAD
             "reference_T1": ""
+=======
+            "reference_T1": "",
+            "moving_image": ""
+            
+>>>>>>> 8b9df93 (WIP: Save progress on codex-linreg-test)
         }
 
         self.cfg["FSL"] = {
