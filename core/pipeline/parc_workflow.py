@@ -1,15 +1,15 @@
 # Trying to implement SWANe Code 
 
 from nipype.interfaces.fsl import (BET, FLIRT, RobustFOV, ApplyXFM, ApplyMask)
-from Toolbox.core.utils.CustomWorkflow import CustomWorkflow
-from Toolbox.core.utils.CustomDcm2niix import CustomDcm2niix
-from Toolbox.core.utils.ForceOrient import ForceOrient
+from core.utils.CustomWorkflow import CustomWorkflow
+#from core.utils.CustomDcm2niix import CustomDcm2niix
+from core.utils.ForceOrient import ForceOrient
 from nipype import Node 
 from nipype.interfaces.utility import IdentityInterface
 from configparser import SectionProxy
 
 
-def linear_reg_workflow(name: str, dicom_dir: str, config: SectionProxy, base_dir: str = "/", is_volumetric: bool = True, is_partial_coverage : bool = False) -> CustomWorkflow:
+def linear_reg_workflow(name: str, t1_path: str, config: SectionProxy, base_dir: str = "/", is_volumetric: bool = True, is_partial_coverage : bool = False) -> CustomWorkflow:
     """
     Transforms input images in a reference space through a linear registration.
 
@@ -17,8 +17,10 @@ def linear_reg_workflow(name: str, dicom_dir: str, config: SectionProxy, base_di
     ----------
     name : str
         The workflow name.
-    dicom_dir : path
+    dicom_dir : path, optional 
         The file path of the DICOM files.
+    t1_path : path
+        Path of t1 image 
     config: SectionProxy
         workflow settings.
     base_dir : path, optional
@@ -62,20 +64,21 @@ def linear_reg_workflow(name: str, dicom_dir: str, config: SectionProxy, base_di
     
     # Output Node
     outputnode = Node(
-        IdentityInterface(fields=['registered_file', 'betted_registered_file' 'out_matrix_file']),
+        IdentityInterface(fields=['registered_file', 'betted_registered_file', 'out_matrix_file']),
         name='outputnode')
 
-    # NODE 1: Conversion dicom -> nifti
-    conversion = Node(CustomDcm2niix(), name='%s_conv' % name)
-    conversion.inputs.source_dir = dicom_dir
-    conversion.inputs.bids_format = False
-    conversion.inputs.out_filename = name
-    conversion.inputs.name_conflicts = 1
-    conversion.inputs.merge_imgs = 2
+#    # NODE 1: Conversion dicom -> nifti
+#    conversion = Node(CustomDcm2niix(), name='%s_conv' % name)
+#    conversion.inputs.source_dir = dicom_dir
+#   conversion.inputs.bids_format = False
+#   conversion.inputs.out_filename = name
+#   conversion.inputs.name_conflicts = 1
+#   conversion.inputs.merge_imgs = 2
+
 
     # NODE 2: Orienting in radiological convention
     reorient = Node(ForceOrient(), name='%s_reorient' % name)
-    workflow.connect(conversion, "converted_files", reorient, "in_file")
+    workflow.connect(inputnode, "out_file", reorient, "in_file")
 
     # NODE 3: Crop neck
     robustfov = Node(RobustFOV(), name="%s_robustfov" % name)
@@ -115,17 +118,17 @@ def linear_reg_workflow(name: str, dicom_dir: str, config: SectionProxy, base_di
         workflow.connect(brain_masking, "out_file", outputnode, "betted_registered_file")
         workflow.connect(flirt_2_ref, "out_matrix_file", outputnode, "out_matrix_file")
 
-    else:
+#    else:
         # NODE 4b: Scalp removal
-        bet = Node(BET(), '%s_BET' % name)
-        if config is not None:
-            bet.inputs.frac = config.getfloat_safe('bet_thr')
-        if config is not None and config.getboolean_safe('bet_bias_correction'):
-            bet.inputs.reduce_bias = True
-        else:
-            bet.inputs.robust = True
-        bet.inputs.mask = True
-        workflow.connect(robustfov, "out_roi", bet, "in_file")
+#        bet = Node(BET(), '%s_BET' % name)
+#        if config is not None:
+#            bet.inputs.frac = config.getfloat_safe('bet_thr')
+#        if config is not None and config.getboolean_safe('bet_bias_correction'):
+#            bet.inputs.reduce_bias = True
+#        else:
+#            bet.inputs.robust = True
+#        bet.inputs.mask = True
+#        workflow.connect(robustfov, "out_roi", bet, "in_file")
 
         # NODE 5b: Linear registration to reference space
         flirt_2_ref = Node(FLIRT(), name='%s_brain_2_ref' % name)
@@ -140,7 +143,7 @@ def linear_reg_workflow(name: str, dicom_dir: str, config: SectionProxy, base_di
             flirt_2_ref.inputs.dof = 6
             flirt_2_ref.inputs.interp = "trilinear"
 
-        workflow.connect(bet, "out_file", flirt_2_ref, "in_file")
+        workflow.connect(robustfov, "out_file", flirt_2_ref, "in_file")
         workflow.connect(inputnode, ("output_name", get_betted_name), flirt_2_ref, "out_file")
         workflow.connect(inputnode, "reference", flirt_2_ref, "reference")
 

@@ -17,7 +17,7 @@ class MainWorkflow(Workflow):
         self.add_nodes([wf_io])
 
         # 2) Parcellation step
-        from core.pipeline.parc_workflow import parc_workflow
+        from core.pipeline.parc_workflow import linear_reg_workflow
         wf_parc = parc_workflow(config)
         self.add_nodes([wf_parc])
 

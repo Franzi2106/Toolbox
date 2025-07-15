@@ -5,7 +5,7 @@ from nipype.interfaces.fsl import SwapDimensions
 from os.path import abspath
 import os
 from nipype.interfaces.base import (BaseInterface, BaseInterfaceInputSpec, TraitedSpec, File, isdefined)
-from Toolbox.core.utils.Orient import Orient
+from core.utils.Orient import Orient
 
 
 # -*- DISCLAIMER: this class extends a Nipype class (nipype.interfaces.base.BaseInterfaceInputSpec)  -*-

@@ -8,7 +8,7 @@ from core.utils.environment import fsl_conflict_check
 from core.config.config_manager import ConfigManager
 
 from core.pipeline.io_workflow           import make_paths
-from core.pipeline.parc_workflow import apply_parcellation
+from core.pipeline.parc_workflow import linear_reg_workflow
 from core.pipeline.subjectdict_workflow  import build_subject_dict
 
 def main():
@@ -43,7 +43,14 @@ def main():
     # 4) Parcellate
     out_dir = cfg.get("PATHS", "output_dir", fallback=".")
     print("Parcellating atlas into subject space…")
-    label_map = apply_parcellation(t1_path, atlas_path, out_dir=out_dir)
+
+    name                = cfg.get("APP", "subject_id",        fallback="testsubj")
+    t1_path             = cfg.get("PATHS", "reference_T1",     fallback="")
+    config              = cfg                                # your ConfigManager
+    base_dir            = out_dir                            # where nipype writes its work/
+    is_volumetric       = True                               # you only do 3D
+    is_partial_coverage = False 
+    label_map = linear_reg_workflow (name, t1_path, config, base_dir, is_volumetric, is_partial_coverage)
     print("    Label map →", label_map)
 
     # 5) Build subject dict

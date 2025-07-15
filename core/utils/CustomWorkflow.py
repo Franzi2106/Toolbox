@@ -4,8 +4,8 @@ from nipype.pipeline.engine import Workflow
 from nipype import Node, logging
 from nipype.interfaces.utility import IdentityInterface
 from nipype.interfaces.io import DataSink
-from Toolbox.core.utils.NodeListEntry import NodeListEntry
-from swane import strings
+from core.utils.NodeListEntry import NodeListEntry
+#from swane import strings
 
 logger = logging.getLogger("nipype.workflow")
 
