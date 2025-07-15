@@ -1,7 +1,7 @@
 # core/config/config_manager.py
-
-####### MEIN CODE ######
-# core/config/config_manager.py
+# Acts as a wrapper (helper) for ConfigParser 
+# Advantage: simpliefies ConfigParser; adds defaults & helpers. Loads & manages settings
+# easily read/write toolbox.ini.
 
 import os
 from configparser import ConfigParser
@@ -22,7 +22,6 @@ class ConfigManager:
             "bids_root": "",
             "atlas_path": "",
             "reference_T1": ""
-            # reference_T1 wird noch nicht verwended/gebraucht. Muss noch referenziert werden in __main__ bwz. .ini
         }
 
         self.cfg["FSL"] = {

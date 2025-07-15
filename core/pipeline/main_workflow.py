@@ -1,3 +1,5 @@
+# assembles steps from __main__.py into a Nipype Workflow
+
 # core/pipeline/main_workflow.py
 from nipype import Workflow
 

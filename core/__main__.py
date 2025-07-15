@@ -1,3 +1,7 @@
+# main entry point, where workflow runs (uses config)
+# sets workflow steps 
+# calls each step when the module is run
+
 #!/usr/bin/env python3
 import sys, os
 from core.utils.environment import fsl_conflict_check
@@ -10,17 +14,17 @@ from core.pipeline.subjectdict_workflow  import build_subject_dict
 def main():
     # 1) Load config
     cfg = ConfigManager("toolbox.ini")
-    # ─────────────────────────────────────────────────────────────
-# 1b) FSL-Container-Pfad als ENV-Variable exportieren
+
+    # 1b) FSL-Container-Pfad als ENV-Variable exportieren
     sing_img = cfg.get("FSL", "singularity_image", fallback=None)
     if sing_img:
         os.environ["FSL_SINGULARITY_IMAGE"] = sing_img
-# ─────────────────────────────────────────────────────────────
+
     if cfg.getboolean("APP", "show_config_on_startup"):
         print(cfg)
         sys.exit(0)
 
-#    # 2) Env check
+    # 2) Env check
     fsl_img = cfg.get("FSL", "singularity_image", fallback="")
     if not fsl_conflict_check(fsl_img):
         print("FSL check failed. Aborting.")

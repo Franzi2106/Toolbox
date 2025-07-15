@@ -1,3 +1,5 @@
+# Nipype Workflow for finding the correct file paths for T1 image and  atlas based on configuration settings.
+
 """I/O discovery workflow."""
 
 from pathlib import Path
@@ -5,7 +7,7 @@ from nipype import Workflow, Node, Function
 
 
 def make_paths(subject_id, bids_root, reference_T1, atlas_path):
-    """Return absolute paths for the subject T1 and atlas."""
+    """Return absolute paths for the subject T1 and atlas. Checks whether a BIDS root directory or a direct reference_T1 path is given. """
 
     if bids_root:
         t1_file = Path(bids_root) / subject_id / "ses-01" / "anat" / f"{subject_id}_ses-01_run-01_T1w.nii.gz"
