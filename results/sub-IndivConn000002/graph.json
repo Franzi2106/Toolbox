@@ -1,0 +1,34 @@
+[
+    {
+        "group": 1,
+        "imports": [],
+        "name": "0_sub-IndivConn000002_reorient",
+        "size": 1
+    },
+    {
+        "group": 1,
+        "imports": [
+            "0_sub-IndivConn000002_reorient"
+        ],
+        "name": "1_sub-IndivConn000002_robustfov",
+        "size": 1
+    },
+    {
+        "group": 2,
+        "imports": [],
+        "name": "2_SaveResults_outputnode_registered_file",
+        "size": 1
+    },
+    {
+        "group": 3,
+        "imports": [],
+        "name": "3_SaveResults_outputnode_betted_registered_file",
+        "size": 1
+    },
+    {
+        "group": 4,
+        "imports": [],
+        "name": "4_SaveResults_outputnode_out_matrix_file",
+        "size": 1
+    }
+]

@@ -1,0 +1,73 @@
+{
+    "groups": [
+        {
+            "name": "Group_00001",
+            "procs": [
+                0,
+                1
+            ],
+            "total": 2
+        },
+        {
+            "name": "Group_00002",
+            "procs": [
+                2
+            ],
+            "total": 1
+        },
+        {
+            "name": "Group_00003",
+            "procs": [
+                3
+            ],
+            "total": 1
+        },
+        {
+            "name": "Group_00004",
+            "procs": [
+                4
+            ],
+            "total": 1
+        }
+    ],
+    "links": [
+        {
+            "source": 0,
+            "target": 1,
+            "value": 1
+        }
+    ],
+    "maxN": 2,
+    "nodes": [
+        {
+            "group": 1,
+            "name": "0_sub-IndivConn000002_reorient",
+            "report": "/data/data_fbaum/Toolbox/results/sub-IndivConn000002/sub-IndivConn000002_reorient/_report/report.rst",
+            "result": "/data/data_fbaum/Toolbox/results/sub-IndivConn000002/sub-IndivConn000002_reorient/result_sub-IndivConn000002_reorient.pklz"
+        },
+        {
+            "group": 1,
+            "name": "1_sub-IndivConn000002_robustfov",
+            "report": "/data/data_fbaum/Toolbox/results/sub-IndivConn000002/sub-IndivConn000002_robustfov/_report/report.rst",
+            "result": "/data/data_fbaum/Toolbox/results/sub-IndivConn000002/sub-IndivConn000002_robustfov/result_sub-IndivConn000002_robustfov.pklz"
+        },
+        {
+            "group": 2,
+            "name": "2_SaveResults_outputnode_registered_file",
+            "report": "/data/data_fbaum/Toolbox/results/sub-IndivConn000002/SaveResults_outputnode_registered_file/_report/report.rst",
+            "result": "/data/data_fbaum/Toolbox/results/sub-IndivConn000002/SaveResults_outputnode_registered_file/result_SaveResults_outputnode_registered_file.pklz"
+        },
+        {
+            "group": 3,
+            "name": "3_SaveResults_outputnode_betted_registered_file",
+            "report": "/data/data_fbaum/Toolbox/results/sub-IndivConn000002/SaveResults_outputnode_betted_registered_file/_report/report.rst",
+            "result": "/data/data_fbaum/Toolbox/results/sub-IndivConn000002/SaveResults_outputnode_betted_registered_file/result_SaveResults_outputnode_betted_registered_file.pklz"
+        },
+        {
+            "group": 4,
+            "name": "4_SaveResults_outputnode_out_matrix_file",
+            "report": "/data/data_fbaum/Toolbox/results/sub-IndivConn000002/SaveResults_outputnode_out_matrix_file/_report/report.rst",
+            "result": "/data/data_fbaum/Toolbox/results/sub-IndivConn000002/SaveResults_outputnode_out_matrix_file/result_SaveResults_outputnode_out_matrix_file.pklz"
+        }
+    ]
+}

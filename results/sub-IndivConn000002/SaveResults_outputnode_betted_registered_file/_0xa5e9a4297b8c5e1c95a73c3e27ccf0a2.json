@@ -1,0 +1,18 @@
+[
+    [
+        "_outputs",
+        []
+    ],
+    [
+        "base_directory",
+        "./results/output"
+    ],
+    [
+        "parameterization",
+        true
+    ],
+    [
+        "remove_dest_dir",
+        false
+    ]
+]

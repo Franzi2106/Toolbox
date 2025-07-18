@@ -60,14 +60,19 @@ def linear_reg_workflow(name: str, t1_path: str, config: SectionProxy, base_dir:
 
     # Input Node
     inputnode = Node(
-        IdentityInterface(fields=['reference', 'output_name', 'brain_mask']),
+        IdentityInterface(fields=['reference', 'output_name', 'brain_mask', 't1_file']),
         name='inputnode')
+
+    inputnode.inputs.t1_file = t1_path
+    inputnode.inputs.reference = t1_path
+    inputnode.inputs.output_name = name
     
     # Output Node
     outputnode = Node(
         IdentityInterface(fields=['registered_file', 'betted_registered_file', 'out_matrix_file']),
         name='outputnode')
-
+    # ensure node exists even if later connections fail
+    workflow.add_nodes([outputnode])
 #    # NODE 1: Conversion dicom -> nifti
 #    conversion = Node(CustomDcm2niix(), name='%s_conv' % name)
 #    conversion.inputs.source_dir = dicom_dir
@@ -79,7 +84,7 @@ def linear_reg_workflow(name: str, t1_path: str, config: SectionProxy, base_dir:
 
     # NODE 2: Orienting in radiological convention
     reorient = Node(ForceOrient(), name='%s_reorient' % name)
-    workflow.connect(inputnode, "out_file", reorient, "in_file")
+    workflow.connect(inputnode, "t1_file", reorient, "in_file")
 
     # NODE 3: Crop neck
     robustfov = Node(RobustFOV(), name="%s_robustfov" % name)
