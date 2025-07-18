@@ -1,6 +1,7 @@
 # Trying to implement SWANe Code 
 
 from nipype.interfaces.fsl import (BET, FLIRT, RobustFOV, ApplyXFM, ApplyMask)
+import os
 from core.utils.CustomWorkflow import CustomWorkflow
 #from core.utils.CustomDcm2niix import CustomDcm2niix
 from core.utils.ForceOrient import ForceOrient
@@ -168,5 +169,11 @@ def linear_reg_workflow(name: str, t1_path: str, config: SectionProxy, base_dir:
         workflow.connect(flirt_2_ref, "out_file", outputnode, "betted_registered_file")
         workflow.connect(unbet_flirt, "out_file", outputnode, "registered_file")
         workflow.connect(flirt_2_ref, "out_matrix_file", outputnode, "out_matrix_file")
-    
+
+    # Store results in an "output" folder inside the workflow base directory
+    sink_path = os.path.join(base_dir, "output")
+    workflow.sink_result(sink_path, 'outputnode', 'registered_file', 'registered_file')
+    workflow.sink_result(sink_path, 'outputnode', 'betted_registered_file', 'betted_registered_file')
+    workflow.sink_result(sink_path, 'outputnode', 'out_matrix_file', 'out_matrix_file')
+
     return workflow

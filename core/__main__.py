@@ -50,8 +50,10 @@ def main():
     base_dir            = out_dir                            # where nipype writes its work/
     is_volumetric       = True                               # you only do 3D
     is_partial_coverage = False 
-    label_map = linear_reg_workflow (name, t1_path, config, base_dir, is_volumetric, is_partial_coverage)
-    print("    Label map →", label_map)
+    label_map = linear_reg_workflow(name, t1_path, config, base_dir, is_volumetric, is_partial_coverage)
+    print("Running registration workflow…")
+    label_map.run()
+    print("    Workflow outputs stored in", os.path.join(base_dir, "output"))
 
     # 5) Build subject dict
     print("Building subject dictionary…")

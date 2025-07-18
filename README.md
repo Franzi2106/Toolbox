@@ -29,3 +29,10 @@ Pipeline Overview
 	•	Volumetric overlay on T1 slices
 	•	Surface rendering or 3D node plot
 	•	Optional edges for connectivity
+
+Running the registration workflow
+---------------------------------
+1. Configure paths in `toolbox.ini` (subject ID, atlas, output directory).
+2. Ensure FSL is installed or provide the Singularity image path.
+3. Run `python -m core` to execute the workflow.
+   Outputs will be written to `output_dir/output/`.
