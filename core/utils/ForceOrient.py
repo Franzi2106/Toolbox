@@ -4,8 +4,12 @@ import shutil
 from nipype.interfaces.fsl import SwapDimensions
 from os.path import abspath
 import os
-from nipype.interfaces.base import (BaseInterface, BaseInterfaceInputSpec, TraitedSpec, File, isdefined)
-from core.utils.Orient import Orient
+from nipype.interfaces.base import (BaseInterface, BaseInterfaceInputSpec, TraitedSpec, File, isdefined, CommandLine)
+#from core.utils.Orient import Orient
+import subprocess
+
+
+
 
 
 # -*- DISCLAIMER: this class extends a Nipype class (nipype.interfaces.base.BaseInterfaceInputSpec)  -*-
@@ -32,25 +36,70 @@ class ForceOrient(BaseInterface):
     def _run_interface(self, runtime):
         self.inputs.out_file = self._gen_outfilename()
         shutil.copy(self.inputs.in_file, self.inputs.out_file)
-        get_orient = Orient(in_file=self.inputs.out_file)
-        get_orient.inputs.get_orient = True
-        res = get_orient.run()
-        if res.outputs.orient == "NEUROLOGICAL":
-            swap_nr = SwapDimensions()
-            swap_nr.inputs.in_file = self.inputs.out_file
-            swap_nr.inputs.out_file = self.inputs.out_file
-            swap_nr.inputs.new_dims = ("-x", "y", "z")
-            swap_nr.run()
-            swap_orient = Orient(in_file=self.inputs.out_file)
-            swap_orient.inputs.swap_orient = True
-            swap_orient.run()
-        swap_dim = SwapDimensions()
-        swap_dim.inputs.in_file = self.inputs.out_file
-        swap_dim.inputs.out_file = self.inputs.out_file
-        swap_dim.inputs.new_dims = ("RL", "PA", "IS")
-        swap_dim.run()
+    #Neu von Chatgpt: 
+
+        # ✨ Singularity-Aufruf für fslorient
+        fsl_img = os.environ.get("FSL_SINGULARITY_IMAGE")
+        if not fsl_img:
+            raise RuntimeError("FSL_SINGULARITY_IMAGE environment variable not set")
+
+        # Get current orientation
+        cmd_get_orient = [
+            "singularity", "exec", fsl_img,
+            "fslorient", "-getorient", self.inputs.out_file
+        ]
+        try:
+            orient = subprocess.check_output(cmd_get_orient, text=True).strip()
+        except subprocess.CalledProcessError as e:
+            raise RuntimeError(f"fslorient -getorient failed: {e}")
+
+        # If NEUROLOGICAL, mirror x-axis and update orientation
+        if orient == "NEUROLOGICAL":
+            swap_cmd = [
+                "singularity", "exec", fsl_img,
+                "fslswapdim", self.inputs.out_file,
+                "-x", "y", "z",
+                self.inputs.out_file
+            ]
+            subprocess.run(swap_cmd, check=True)
+
+            swap_orient_cmd = [
+                "singularity", "exec", fsl_img,
+                "fslorient", "-swaporient", self.inputs.out_file
+            ]
+            subprocess.run(swap_orient_cmd, check=True)
+
+        # Always enforce RL PA IS orientation
+        final_swap_cmd = [
+            "singularity", "exec", fsl_img,
+            "fslswapdim", self.inputs.out_file,
+            "RL", "PA", "IS",
+            self.inputs.out_file
+        ]
+        subprocess.run(final_swap_cmd, check=True)
 
         return runtime
+
+    # Alt von Swane: 
+        
+#        get_orient = Orient(in_file=self.inputs.out_file)
+#        get_orient.inputs.get_orient = True
+#        res = get_orient.run()
+#       if res.outputs.orient == "NEUROLOGICAL":
+#            swap_nr = SwapDimensions()
+#            swap_nr.inputs.in_file = self.inputs.out_file
+#           swap_nr.inputs.out_file = self.inputs.out_file
+#            swap_nr.inputs.new_dims = ("-x", "y", "z")
+#            swap_nr.run()
+#            swap_orient = Orient(in_file=self.inputs.out_file)
+#            swap_orient.inputs.swap_orient = True
+#            swap_orient.run()
+#        swap_dim = SwapDimensions()
+#        swap_dim.inputs.in_file = self.inputs.out_file
+#        swap_dim.inputs.out_file = self.inputs.out_file
+#        swap_dim.inputs.new_dims = ("RL", "PA", "IS")
+#        swap_dim.run()
+#        return runtime
 
     def _gen_outfilename(self):
         out_file = self.inputs.out_file
